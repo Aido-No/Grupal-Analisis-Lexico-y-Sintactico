@@ -1,0 +1,52 @@
+options
+{
+  JDK_VERSION = "1.5";
+  STATIC = true;
+  DEBUG_TOKEN_MANAGER = true;
+  DEBUG_PARSER = true;
+  IGNORE_CASE = true;
+}
+
+PARSER_BEGIN(XML_parser)
+
+	import java.io.*;
+	import java.util.*;
+
+	public class XML_parser {
+
+    	public static void main(String[] args) throws ParseException,
+     						FileNotFoundException
+       {
+        	if ( args.length < 1 ) {
+           	System.out.println("Please pass in the filename for a parameter.");
+           	System.exit(1);
+        }
+
+        XML_parser parser = new XML_parser( new FileInputStream(args[0]) );
+
+        parser.Input();
+        System.out.println("Parse completed.");
+       }
+     }
+PARSER_END(XML_parser)
+
+TOKEN_MGR_DECLS:
+{
+	//TO-DO: a completar por el alumnado
+}
+
+SKIP:
+{
+	//TO-DO: a completar por el alumnado
+} 
+
+TOKEN:
+{
+	//TO-DO: a completar por el alumnado
+}
+
+void Input():
+{}
+{
+	//TO-DO: a completar por el alumnado
+}
