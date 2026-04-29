@@ -76,10 +76,96 @@ public static void main(String args [])
 
 SKIP:
 {
-	//TO-DO: a completar por el alumnado
-} 
+    " "          // Space
+    | "\t"       // Tab
+    | "\n"       // Newline
+    | "\r"       // Carriage return
+    | "\r\n"     // Windows newline
+}
+
+// Define lexical states FIRST before using them
+// States must be declared before TOKEN section
+// In JavaCC, states are defined implicitly when you use <STATENAME> before TOKEN
 
 TOKEN:
 {
-	//TO-DO: a completar por el alumnado
+    // XML Declaration
+    < XML_DECL: "<?" ("xml" | "XML") (" " | "\t" | "\n" | "\r")+ (~[">"])* "?>" >
+    
+    // Processing Instruction
+  | < PROCESSING_INSTRUCTION: "<?" (~[">"])* "?>" >
+    
+    // Comments - Use regular expression without state switching for simplicity
+  |  < COMMENT: "<!--" (~["-"])* ("-" (~["-"])*)* "-->" >
+    
+    // CDATA Sections
+  | < CDATA: "<![CDATA[" (~["]"])* ("]" (~["]"])*)* "]]>" >
+    
+    // DOCTYPE Declaration
+ |  < DOCTYPE: "<!DOCTYPE" (~[">"])* ">" >
+    
+    // Opening tag start
+|   < OPEN_TAG_START: "<" >
+    
+    // Closing tags
+|    < CLOSE_TAG: "</" (["a"-"z","A"-"Z","_",":"]) (["a"-"z","A"-"Z","0"-"9","_","-",".",":"])* ">" >
+    
+    // Element name (for after OPEN_TAG_START)
+|    < ELEMENT_NAME: (["a"-"z","A"-"Z","_",":"]) (["a"-"z","A"-"Z","0"-"9","_","-",".",":"])* >
+    
+    // Attribute name
+    | < ATTRIBUTE_NAME: (["a"-"z","A"-"Z","_",":"]) (["a"-"z","A"-"Z","0"-"9","_","-",".",":"])* >
+    
+    // Equals sign
+    | < EQUALS: "=" >
+    
+    // Single quoted attribute value
+    | < SINGLE_QUOTED_VALUE: "'" (~["'"])* "'" >
+    
+    // Double quoted attribute value
+    | < DOUBLE_QUOTED_VALUE: "\"" (~["\""])* "\"" >
+    
+    // End of opening tag
+    | < TAG_END: ">" >
+    
+    // Self-closing tag end
+    | < SELF_CLOSING_END: "/>" >
+    
+    // Entity Reference
+    | < ENTITY_REF: "&" (["a"-"z","A"-"Z","0"-"9"])+ ";" >
+    
+    // Hex Character Reference
+    | < HEX_CHAR_REF: "&#x" (["0"-"9","a"-"f","A"-"F"])+ ";" >
+    
+    // Decimal Character Reference
+    | < DEC_CHAR_REF: "&#" (["0"-"9"])+ ";" >
+    
+    // Character Data (any text not containing <)
+    | < CHARACTER_DATA: (~["<"])+ >
+    
+    // End of File
+    | <  END_OF_FILE: "" >
 }
+
+// If you really need lexical states for nested comments (more complex but possible)
+// Here's an alternative approach using lexical states properly:
+
+/*
+// Declare states at the beginning (before SKIP and TOKEN)
+// In JavaCC, you need to declare states like this:
+
+// States must be declared in a special way - uncomment if needed
+//
+// SKIP:
+// {
+//    ...
+// }
+//
+// MORE:
+// {
+//    ...
+// }
+//
+// But simpler approach: avoid states for basic XML lexer
+
+*/
