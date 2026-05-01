@@ -85,28 +85,35 @@ SKIP:
 
 TOKEN : {
     // Special XML constructs - MOST SPECIFIC FIRST
-    < XML_DECL: "<?" ("xml" | "XML") (~[">"])* "?>" >
+    < XML_DECL: "<#" ("xml" | "XML") (" ")+ ("version" | "encoding") (" ")* "=" (" ")* ("\"" | "'") (~["\"","'"])* ("\"" | "'") (" ")* ("version" | "encoding") (" ")* "=" (" ")* ("\"" | "'") (~["\"","'"])* ("\"" | "'")? (" ")* "#>" >
+    
 |   < PROCESSING_INSTRUCTION: "<?" (~[">"])* "?>" >
-//|   < COMMENT: "<!--" (~["-"])* ("-" (~["-"])*)* "-->" >
-|   < COMMENT: "<!--" (~[">"])* "-->" >
+    
+|   < COMMENT: "<!--" (~["-"])* ("-" (~["-"])+)* "--" ">" >
+    
 |   < CDATA: "<![CDATA[" (~["]"])* ("]" (~["]"])*)* "]]>" >
-|   < DOCTYPE: "<!DOCTYPE" (~[">"])* ">" >
+    
+|   < DOCTYPE: "<!DOCTYPE" (" ")+ (~[">"])* ">" >
     
     // Tag delimiters - THESE MUST COME BEFORE CHARACTER_DATA
 |   < OPEN: "<" >
 |   < CLOSE_START: "</" >  
-|   < CLOSE: ">" >           // <-- CRITICAL: This must be BEFORE CHARACTER_DATA
+|   < CLOSE: ">" >
 |   < SELF_CLOSE: "/>" >
     
     // Names and values
-|   < NAME: (["a"-"z","A"-"Z","_",":"]) (["a"-"z","A"-"Z","0"-"9","_","-",".",":"])* >
-//|   < ATTRIBUTE_NAME: (["a"-"z","A"-"Z","_",":"]) (["a"-"z","A"-"Z","0"-"9","_","-",".",":"])* >
+|   < NAME: (["a"-"z","A"-"Z","_",":","\u0080"-"\uFFFF"]) (["a"-"z","A"-"Z","0"-"9","_","-",".",":","\u0080"-"\uFFFF"])* >
+    
 |   < EQUALS: "=" >
+    
 |   < STRING: "\"" (~["\""])* "\"" | "'" (~["'"])* "'" >
+    
 |   < ENTITY_REF: "&" (["a"-"z","A"-"Z","0"-"9"])+ ";" >
     
-    // CHARACTER_DATA - LEAST SPECIFIC - ANYTHING NOT STARTING WITH <
-|   < CHARACTER_DATA: (~["<"])+ >
+|   < NUMERIC_ENTITY: "&#" (["0"-"9"])+ ";" | "&#x" (["0"-"9","a"-"f","A"-"F"])+ ";" >
+    
+    // CHARACTER_DATA - ANYTHING NOT STARTING WITH < OR & (but & is handled by ENTITY_REF)
+|   < CHARACTER_DATA: (~["<","&",">"])+ >
     
 |   < END_OF_FILE: "" >
 }
