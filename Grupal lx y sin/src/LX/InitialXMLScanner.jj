@@ -76,10 +76,35 @@ public static void main(String args [])
 
 SKIP:
 {
-	//TO-DO: a completar por el alumnado
-} 
+    " "          // Space
+    | "\t"       // Tab
+    | "\n"       // Newline
+    | "\r"       // Carriage return
+    | "\r\n"     // Windows newline
+}
 
-TOKEN:
-{
-	//TO-DO: a completar por el alumnado
+TOKEN : {
+    // Special XML constructs - MOST SPECIFIC FIRST
+    < XML_DECL: "<#" ("xml" | "XML") (" ")+ ("version" | "encoding") (" ")* "=" (" ")* ("\"" | "'") (~["\"","'"])* ("\"" | "'") (" ")* ("version" | "encoding") (" ")* "=" (" ")* ("\"" | "'") (~["\"","'"])* ("\"" | "'")? (" ")* "#>" >
+    
+|   < COMMENT: "<!--" (~["-"])* ("-" (~["-"])+)* "--" ">" >
+    
+|   < DOCTYPE: "<!DOCTYPE" (" ")+ (~[">"])* ">" >
+    
+    // Tag delimiters - THESE MUST COME BEFORE CHARACTER_DATA
+|   < CLOSE_START: "</" >
+|   < SELF_CLOSE: "/>" >
+|   < OPEN: "<" >
+|   < CLOSE: ">" >
+    
+    // Names and values
+|   < NAME: (["a"-"z","A"-"Z","_",":"]) (["a"-"z","A"-"Z","0"-"9","_","-",".",":"])* >
+    
+|   < EQUALS: "=" >
+    
+|   < STRING: "\"" (~["\""])* "\"" | "'" (~["'"])* "'" >
+    
+|   < CHARACTER_DATA: (~["<","&",">"])+ >
+    
+|   < END_OF_FILE: "" >
 }
