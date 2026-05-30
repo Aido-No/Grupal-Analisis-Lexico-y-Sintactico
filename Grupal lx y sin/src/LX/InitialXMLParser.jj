@@ -89,5 +89,13 @@ void Header() :
 void Body() :
 {}
 {
-    // a completar esto nos falta XD
+    <OPEN> <NAME> <CLOSE>
+
+    (
+        Element()
+      | <CHARACTER_DATA>
+      | <COMMENT>
+    )*
+
+    <CLOSE_START> <NAME> <CLOSE>
 }
