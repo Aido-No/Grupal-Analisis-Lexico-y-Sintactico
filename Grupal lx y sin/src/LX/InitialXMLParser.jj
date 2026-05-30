@@ -44,9 +44,114 @@ SKIP :
 	| "\r"
 	| "\r\n"
 }
+
+<DEFAULT> TOKEN:
+{
+< XML_DECL: "<#xml" ("+")? 
+            ( " " | "\t" | "\n" | "\r" )+ 
+            "version" 
+            ( " " | "\t" | "\n" | "\r" )* 
+            "=" 
+            ( " " | "\t" | "\n" | "\r" )* 
+            ( "\"0.5\"" | "\"1.0\"" | "'0.5'" | "'1.0'" )
+            ( " " | "\t" | "\n" | "\r" )+ 
+            "encoding" 
+            ( " " | "\t" | "\n" | "\r" )* 
+            "=" 
+            ( " " | "\t" | "\n" | "\r" )* 
+            "\"UTF-8\""
+            ( " " | "\t" | "\n" | "\r" )* 
+            "#>" >
+    
+|   < COMMENT_START: "<!--" > : IN_COMMENT
+    
+|   < DOCTYPE: "<!DOCTYPE" (" ")+ (~[">"])* ">" >
+    
+|   < CLOSE_START: "</" >
+|   < SELF_CLOSE: "/>" >
+|   < OPEN: "<" >
+|   < CLOSE: ">" >
+    
+|   < NAME: (["a"-"z","A"-"Z","_",":"]) (["a"-"z","A"-"Z","0"-"9","_","-",".",":"])* >
+    
+|   < EQUALS: "=" >
+    
+|   < STRING: "\"" (~["\""])* "\"" | "'" (~["'"])* "'" >
+    
+|   < CHARACTER_DATA: (~["<","&",">"])+ >
+    
+|   < END_OF_FILE: "" >
+}
+
+<IN_COMMENT> TOKEN:
+{
+    < COMMENT_END: "-->" > 
+    {
+        commentNesting--;
+        if (commentNesting == 0) {
+            SwitchTo(DEFAULT);
+        }
+    }
+    
+|   < NESTED_COMMENT_START: "<!--" > 
+    {
+        commentNesting++;
+    }
+}
+
+<IN_COMMENT> MORE:
+{
+    < ~[] >  // Match and consume any character inside comment
+}
+
+void Input() :
+{}
+{
+    ( <XML_DECL> )?
+    ( <DOCTYPE> )?
+    ( Element() | Comment() | <CHARACTER_DATA> )*
+    <END_OF_FILE>
+}
+
+void Element() :
+{
+    Token openTag = null;
+    Token closeTag = null;
+}
+{
+    <OPEN> openTag = <NAME> ( <NAME> <EQUALS> <STRING> )*
+    ( 
+      <CLOSE> 
+      ( Element() | Comment() | <CHARACTER_DATA> )* 
+      <CLOSE_START> closeTag = <NAME> <CLOSE>
+      {
+          if (!openTag.image.equalsIgnoreCase(closeTag.image)) {
+              throw new ParseException("Tag mismatch: expected </" + openTag.image + 
+                                       "> but found </" + closeTag.image + ">");
+          }
+      }
+      |
+      <SELF_CLOSE>
+    )
+}
+
+void Comment() :
+{}
+{
+    {
+        commentNesting = 1;
+    }
+    <COMMENT_START>
+    // The lexer handles everything automatically
+    // When commentNesting returns to 0, we're back in DEFAULT state
+}
+
+/*
 TOKEN:
 {
-< XML_DECL: "<#" ("xml" | "XML") (" ")+ ("version" | "encoding") (" ")* "=" (" ")* ("\"" | "'") (~["\"","'"])* ("\"" | "'") (" ")* ("version" | "encoding") (" ")* "=" (" ")* ("\"" | "'") (~["\"","'"])* ("\"" | "'")? (" ")* "#>" >
+< XML_DECL: "<#" ("xml" | "XML") ("+")? (" ")+ ("version" | "encoding") (" ")* "=" (" ")*
+("\"" | "'") (~["\"","'"])* ("\"" | "'") (" ")* ("version" | "encoding") (" ")* "=" (" ")*
+("\"" | "'") (~["\"","'"])* ("\"" | "'")? (" ")* "#>" >
     
 |   < COMMENT: "<!--" (~["-"])* ("-" (~["-"])+)* "--" ">" >
     
@@ -113,7 +218,7 @@ void Content() :
     (Body() | <CHARACTER_DATA> | <COMMENT>)*
 }
 
-/*
+
 void Input() :
 {}
 {
