@@ -33,7 +33,7 @@ PARSER_END(XML_parser)
 
 TOKEN_MGR_DECLS:
 {
-	//TO-DO: a completar por el alumnado
+	static int commentNesting = 0;
 }
 
 SKIP :
