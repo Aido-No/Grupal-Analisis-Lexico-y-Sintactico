@@ -70,8 +70,24 @@ TOKEN:
 |   < END_OF_FILE: "" >
 }
 
-void Input():
+
+void Input() :
 {}
 {
-	//TO-DO: a completar por el alumnado
+    Header()
+    Body()
+    <EOF>
+}
+
+void Header() :
+{}
+{
+    <XML_DECL>
+    <DOCTYPE>
+}
+
+void Body() :
+{}
+{
+    // a completar esto nos falta XD
 }
