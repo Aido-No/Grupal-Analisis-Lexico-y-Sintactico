@@ -1,4 +1,4 @@
-/*
+
 options
 {
   JDK_VERSION = "1.5";
@@ -46,7 +46,28 @@ SKIP :
 }
 TOKEN:
 {
-	//TO-DO: a completar por el alumnado
+< XML_DECL: "<#" ("xml" | "XML") (" ")+ ("version" | "encoding") (" ")* "=" (" ")* ("\"" | "'") (~["\"","'"])* ("\"" | "'") (" ")* ("version" | "encoding") (" ")* "=" (" ")* ("\"" | "'") (~["\"","'"])* ("\"" | "'")? (" ")* "#>" >
+    
+|   < COMMENT: "<!--" (~["-"])* ("-" (~["-"])+)* "--" ">" >
+    
+|   < DOCTYPE: "<!DOCTYPE" (" ")+ (~[">"])* ">" >
+    
+    // Tag delimiters - THESE MUST COME BEFORE CHARACTER_DATA
+|   < CLOSE_START: "</" >
+|   < SELF_CLOSE: "/>" >
+|   < OPEN: "<" >
+|   < CLOSE: ">" >
+    
+    // Names and values
+|   < NAME: (["a"-"z","A"-"Z","_",":"]) (["a"-"z","A"-"Z","0"-"9","_","-",".",":"])* >
+    
+|   < EQUALS: "=" >
+    
+|   < STRING: "\"" (~["\""])* "\"" | "'" (~["'"])* "'" >
+    
+|   < CHARACTER_DATA: (~["<","&",">"])+ >
+    
+|   < END_OF_FILE: "" >
 }
 
 void Input():
@@ -54,4 +75,3 @@ void Input():
 {
 	//TO-DO: a completar por el alumnado
 }
-*/
