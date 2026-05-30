@@ -70,7 +70,50 @@ TOKEN:
 |   < END_OF_FILE: "" >
 }
 
+void Input() :
+{}
+{
+    Header()
+    Body()
+    <END_OF_FILE>
+}
 
+void Header() :
+{}
+{
+    <XML_DECL>
+    <DOCTYPE>
+}
+
+void Body() :
+{}
+{
+    (      <OPEN> <NAME> Attributes() 
+        <CLOSE> 
+        Content() 
+        <CLOSE_START> <NAME> <CLOSE>
+        |
+        <SELF_CLOSE>
+    )
+    |
+    <CHARACTER_DATA>
+    |
+    <COMMENT>
+}
+
+void Attributes() :
+{}
+{
+    (<NAME> <EQUALS> <STRING>)*
+}
+
+void Content() :
+{}
+{
+    (Body() | <CHARACTER_DATA> | <COMMENT>)*
+}
+
+/*
 void Input() :
 {}
 {
@@ -98,4 +141,4 @@ void Body() :
     )*
 
     <CLOSE_START> <NAME> <CLOSE>
-}
+}*/
