@@ -92,7 +92,7 @@ void Body() :
     <OPEN> <NAME> <CLOSE>
 
     (
-        Element()
+        Body()
       | <CHARACTER_DATA>
       | <COMMENT>
     )*
