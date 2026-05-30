@@ -36,11 +36,14 @@ TOKEN_MGR_DECLS:
 	//TO-DO: a completar por el alumnado
 }
 
-SKIP:
+SKIP :
 {
-	//TO-DO: a completar por el alumnado
-} 
-
+	" "
+	| "\t"
+	| "\n"
+	| "\r"
+	| "\r\n"
+}
 TOKEN:
 {
 	//TO-DO: a completar por el alumnado
