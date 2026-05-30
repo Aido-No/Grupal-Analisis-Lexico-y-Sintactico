@@ -76,7 +76,7 @@ void Input() :
 {
     Header()
     Body()
-    <EOF>
+    <END_OF_FILE>
 }
 
 void Header() :
