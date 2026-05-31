@@ -47,21 +47,7 @@ SKIP :
 
 <DEFAULT> TOKEN:
 {
-< XML_DECL: "<#xml" ("+")? 
-            ( " " | "\t" | "\n" | "\r" )+ 
-            "version" 
-            ( " " | "\t" | "\n" | "\r" )* 
-            "=" 
-            ( " " | "\t" | "\n" | "\r" )* 
-            ( "\"0.5\"" | "\"1.0\"" | "'0.5'" | "'1.0'" )
-            ( " " | "\t" | "\n" | "\r" )+ 
-            "encoding" 
-            ( " " | "\t" | "\n" | "\r" )* 
-            "=" 
-            ( " " | "\t" | "\n" | "\r" )* 
-            "\"UTF-8\""
-            ( " " | "\t" | "\n" | "\r" )* 
-            "#>" >
+< XML_DECL: "<#xml" ("+")? (~["#",">"])* "#>" >
     
 |   < COMMENT_START: "<!--" > : IN_COMMENT
     
@@ -91,17 +77,27 @@ SKIP :
         if (commentNesting == 0) {
             SwitchTo(DEFAULT);
         }
+        // Return a token so the parser knows the comment ended
+        return COMMENT_END;
     }
     
 |   < NESTED_COMMENT_START: "<!--" > 
     {
         commentNesting++;
+        // Return a token to indicate nested comment start
+        return NESTED_COMMENT_START;
     }
 }
 
-<IN_COMMENT> MORE:
+<IN_COMMENT> SKIP:
 {
-    < ~[] >  // Match and consume any character inside comment
+    // Skip any character that doesn't start a comment delimiter
+    < ~["<","-"] >
+    |
+    // Handle partial matches
+    "<" !("!--")
+    |
+    "-" !("-->")
 }
 
 void Input() :
@@ -109,7 +105,7 @@ void Input() :
 {
     ( <XML_DECL> )?
     ( <DOCTYPE> )?
-    ( Element() | Comment() | <CHARACTER_DATA> )*
+    ( Element() | <COMMENT_START> | <CHARACTER_DATA> )*
     <END_OF_FILE>
 }
 
@@ -122,7 +118,7 @@ void Element() :
     <OPEN> openTag = <NAME> ( <NAME> <EQUALS> <STRING> )*
     ( 
       <CLOSE> 
-      ( Element() | Comment() | <CHARACTER_DATA> )* 
+      ( Element() | <COMMENT_START> | <CHARACTER_DATA> )* 
       <CLOSE_START> closeTag = <NAME> <CLOSE>
       {
           if (!openTag.image.equalsIgnoreCase(closeTag.image)) {
@@ -133,17 +129,6 @@ void Element() :
       |
       <SELF_CLOSE>
     )
-}
-
-void Comment() :
-{}
-{
-    {
-        commentNesting = 1;
-    }
-    <COMMENT_START>
-    // The lexer handles everything automatically
-    // When commentNesting returns to 0, we're back in DEFAULT state
 }
 
 /*
