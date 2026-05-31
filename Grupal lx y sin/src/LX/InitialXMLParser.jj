@@ -71,8 +71,7 @@ TOKEN:
 */
 <DEFAULT> TOKEN :
 {
-  < XML_DECL: "<#xml" ("+")? (~["#",">"])* "#>" >   
-	|   < COMMENT: "<!--" (~["-"])* ("-" (~["-"])+)* "--" ">" >    
+  < XML_DECL: "<#xml" ("+")? (~["#",">"])* "#>" >    
 	|   < DOCTYPE: "<!DOCTYPE" (" ")+ (~[">"])* ">" >
   	| < CHARACTER_DATA: (~["<"," ","\t","\n","\r"])+ >
   	| < COMMENT_START: "<!--" > { commentNesting = 1; } : IN_NESTED_COMMENT
@@ -108,10 +107,36 @@ TOKEN:
 void Input() :
 {}
 {
-    <XML_DECL>
-    <DOCTYPE>
-    ( Element() | <COMMENT> | <CHARACTER_DATA> )*
+    (<XML_DECL>)?
+    (<DOCTYPE>)?
+    ( Element() | Comment() | <CHARACTER_DATA> )*
     <EOF>
+}
+
+void Comment() :
+{
+    int localNesting = 1;
+}
+{
+    <COMMENT_START>
+    (
+        <NESTED_COMMENT_START> { localNesting++; }
+        |
+        <COMMENT_END> 
+        { 
+            localNesting--; 
+            if (localNesting == 0) {
+                // Comment complete
+            }
+        }
+        |
+        <COMMENT_TEXT>
+    )*
+    {
+        if (localNesting != 0) {
+            throw new ParseException("Unclosed comment");
+        }
+    }
 }
 
 void Element() :
@@ -123,7 +148,7 @@ void Element() :
     <OPEN> openTag = <NAME> ( <NAME> <EQUALS> <STRING> )*
     ( 
       <CLOSE> 
-      ( Element() | <COMMENT> | <CHARACTER_DATA> )* 
+      ( Element() | Comment() | <CHARACTER_DATA> )* 
       <CLOSE_START> closeTag = <NAME> <CLOSE>
       {
           if (!openTag.image.equalsIgnoreCase(closeTag.image)) {
