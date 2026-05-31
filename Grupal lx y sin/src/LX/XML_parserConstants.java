@@ -11,7 +11,7 @@ public interface XML_parserConstants {
   /** RegularExpression Id. */
   int XML_DECL = 6;
   /** RegularExpression Id. */
-  int COMMENT_START = 7;
+  int COMMENT = 7;
   /** RegularExpression Id. */
   int DOCTYPE = 8;
   /** RegularExpression Id. */
@@ -32,15 +32,9 @@ public interface XML_parserConstants {
   int CHARACTER_DATA = 16;
   /** RegularExpression Id. */
   int END_OF_FILE = 17;
-  /** RegularExpression Id. */
-  int COMMENT_END = 18;
-  /** RegularExpression Id. */
-  int NESTED_COMMENT_START = 19;
 
   /** Lexical state. */
   int DEFAULT = 0;
-  /** Lexical state. */
-  int IN_COMMENT = 1;
 
   /** Literal token values. */
   String[] tokenImage = {
@@ -51,7 +45,7 @@ public interface XML_parserConstants {
     "\"\\r\"",
     "\"\\r\\n\"",
     "<XML_DECL>",
-    "\"<!--\"",
+    "<COMMENT>",
     "<DOCTYPE>",
     "\"</\"",
     "\"/>\"",
@@ -62,9 +56,6 @@ public interface XML_parserConstants {
     "<STRING>",
     "<CHARACTER_DATA>",
     "\"\"",
-    "\"-->\"",
-    "\"<!--\"",
-    "<token of kind 20>",
   };
 
 }

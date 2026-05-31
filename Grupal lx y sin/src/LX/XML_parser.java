@@ -44,7 +44,7 @@
       label_1:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-        case COMMENT_START:
+        case COMMENT:
         case OPEN:
         case CHARACTER_DATA:{
           ;
@@ -59,8 +59,8 @@
           Element();
           break;
           }
-        case COMMENT_START:{
-          Comment();
+        case COMMENT:{
+          jj_consume_token(COMMENT);
           break;
           }
         case CHARACTER_DATA:{
@@ -107,7 +107,7 @@ Token openTag = null;
         label_3:
         while (true) {
           switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-          case COMMENT_START:
+          case COMMENT:
           case OPEN:
           case CHARACTER_DATA:{
             ;
@@ -122,8 +122,8 @@ Token openTag = null;
             Element();
             break;
             }
-          case COMMENT_START:{
-            Comment();
+          case COMMENT:{
+            jj_consume_token(COMMENT);
             break;
             }
           case CHARACTER_DATA:{
@@ -156,17 +156,6 @@ if (!openTag.image.equalsIgnoreCase(closeTag.image)) {
       }
     } finally {
       trace_return("Element");
-    }
-}
-
-  static final public void Comment() throws ParseException {
-    trace_call("Comment");
-    try {
-
-commentNesting = 1;
-      jj_consume_token(COMMENT_START);
-    } finally {
-      trace_return("Comment");
     }
 }
 
@@ -337,7 +326,7 @@ commentNesting = 1;
   /** Generate ParseException. */
   static public ParseException generateParseException() {
 	 jj_expentries.clear();
-	 boolean[] la1tokens = new boolean[21];
+	 boolean[] la1tokens = new boolean[18];
 	 if (jj_kind >= 0) {
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
@@ -351,7 +340,7 @@ commentNesting = 1;
 		 }
 	   }
 	 }
-	 for (int i = 0; i < 21; i++) {
+	 for (int i = 0; i < 18; i++) {
 	   if (la1tokens[i]) {
 		 jj_expentry = new int[1];
 		 jj_expentry[0] = i;

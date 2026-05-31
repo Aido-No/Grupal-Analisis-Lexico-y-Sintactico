@@ -45,11 +45,12 @@ SKIP :
 	| "\r\n"
 }
 
-<DEFAULT> TOKEN:
+TOKEN:
 {
 < XML_DECL: "<#xml" ("+")? (~["#",">"])* "#>" >
     
-|   < COMMENT_START: "<!--" > : IN_COMMENT
+// Your suggested COMMENT pattern - much cleaner!
+|   < COMMENT: "<!--" (~["-"])* ("-" (~["-"])+)* "--" ">" >
     
 |   < DOCTYPE: "<!DOCTYPE" (" ")+ (~[">"])* ">" >
     
@@ -58,7 +59,7 @@ SKIP :
 |   < OPEN: "<" >
 |   < CLOSE: ">" >
     
-|   < NAME: (["a"-"z","A"-"Z","_",":"]) (["a"-"z","A"-"Z","0"-"9","_","-",".",":"])* >
+|   < NAME: (["a"-"z","A"-"Z","_",":"]) (["a"-"z","A"-"Z","0"-"9","_","-",".",":","'"])* >
     
 |   < EQUALS: "=" >
     
@@ -69,43 +70,12 @@ SKIP :
 |   < END_OF_FILE: "" >
 }
 
-<IN_COMMENT> TOKEN:
-{
-    < COMMENT_END: "-->" > 
-    {
-        commentNesting--;
-        if (commentNesting == 0) {
-            SwitchTo(DEFAULT);
-        }
-        // Return a token so the parser knows the comment ended
-        return COMMENT_END;
-    }
-    
-|   < NESTED_COMMENT_START: "<!--" > 
-    {
-        commentNesting++;
-        // Return a token to indicate nested comment start
-        return NESTED_COMMENT_START;
-    }
-}
-
-<IN_COMMENT> SKIP:
-{
-    // Skip any character that doesn't start a comment delimiter
-    < ~["<","-"] >
-    |
-    // Handle partial matches
-    "<" !("!--")
-    |
-    "-" !("-->")
-}
-
 void Input() :
 {}
 {
     ( <XML_DECL> )?
     ( <DOCTYPE> )?
-    ( Element() | <COMMENT_START> | <CHARACTER_DATA> )*
+    ( Element() | <COMMENT> | <CHARACTER_DATA> )*
     <END_OF_FILE>
 }
 
@@ -118,7 +88,7 @@ void Element() :
     <OPEN> openTag = <NAME> ( <NAME> <EQUALS> <STRING> )*
     ( 
       <CLOSE> 
-      ( Element() | <COMMENT_START> | <CHARACTER_DATA> )* 
+      ( Element() | <COMMENT> | <CHARACTER_DATA> )* 
       <CLOSE_START> closeTag = <NAME> <CLOSE>
       {
           if (!openTag.image.equalsIgnoreCase(closeTag.image)) {
