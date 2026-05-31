@@ -145,19 +145,24 @@ void Element() :
     Token closeTag = null;
 }
 {
-    <OPEN> openTag = <NAME> ( <NAME> <EQUALS> <STRING> )*
-    ( 
-      <CLOSE> 
-      ( Element() | Comment() | <CHARACTER_DATA> )* 
-      <CLOSE_START> closeTag = <NAME> <CLOSE>
-      {
+    <OPEN> openTag = <NAME>
+    (
+      <STRING> <SELF_CLOSE>
+      |
+      ( <NAME> <EQUALS> <STRING> )*
+      ( 
+        <CLOSE> 
+        ( Element() | Comment() | <CHARACTER_DATA> )* 
+        <CLOSE_START> closeTag = <NAME> <CLOSE>
+        {
           if (!openTag.image.equalsIgnoreCase(closeTag.image)) {
               throw new ParseException("Tag mismatch: expected </" + openTag.image + 
                                        "> but found </" + closeTag.image + ">");
           }
-      }
-      |
-      <SELF_CLOSE>
+        }
+        |
+        <SELF_CLOSE>
+      )
     )
 }
 
