@@ -46,7 +46,7 @@ SKIP :
 	| "\ufeff"
 	| < LINE_COMMENT: "//" (~["\n","\r"])* ("\n" | "\r" | "\r\n") >
 }
-
+/*
 TOKEN:
 {
 < XML_DECL: "<#xml" ("+")? (~["#",">"])* "#>" >
@@ -67,6 +67,42 @@ TOKEN:
 |   < STRING: "\"" (~["\""])* "\"" | "'" (~["'"])* "'" >
     
 |  < CHARACTER_DATA: (~["<","&",">"," ","\t","\n","\r"])+ >
+}
+*/
+<DEFAULT> TOKEN :
+{
+  < XML_DECL: "<#xml" ("+")? (~["#",">"])* "#>" >   
+	|   < COMMENT: "<!--" (~["-"])* ("-" (~["-"])+)* "--" ">" >    
+	|   < DOCTYPE: "<!DOCTYPE" (" ")+ (~[">"])* ">" >
+  	| < CHARACTER_DATA: (~["<"," ","\t","\n","\r"])+ >
+  	| < COMMENT_START: "<!--" > { commentNesting = 1; } : IN_NESTED_COMMENT
+  	| < CLOSE_START: "</" > : IN_TAG
+    | < OPEN: "<" > : IN_TAG
+}
+
+
+<IN_TAG> TOKEN :
+{
+    < NAME: (["a"-"z","A"-"Z","_",":"]) (["a"-"z","A"-"Z","0"-"9","_","-",".",":"])* >
+    | < CLOSE: ">" > : DEFAULT
+    | < SELF_CLOSE: "/>" > : DEFAULT
+    | < EQUALS: "=" >
+    | < STRING: "\"" (~["\""])* "\"" | "'" (~["'"])* "'" >
+}
+
+<IN_NESTED_COMMENT> TOKEN :
+{
+    < NESTED_COMMENT_START: "<!--" > { commentNesting++; }
+    |
+    < COMMENT_END: "-->" > 
+    { 
+        commentNesting--; 
+        if (commentNesting == 0) {
+            SwitchTo(DEFAULT);
+        }
+    }
+    |
+    < COMMENT_TEXT: ~[] >
 }
 
 void Input() :
