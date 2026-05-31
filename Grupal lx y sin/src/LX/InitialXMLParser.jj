@@ -43,14 +43,15 @@ SKIP :
 	| "\n"
 	| "\r"
 	| "\r\n"
-	| "\ufeff" 
+	| "\ufeff"
+	| <SINGLE_LINE_COMMENT>
 }
 
 TOKEN:
 {
 < XML_DECL: "<#xml" ("+")? (~["#",">"])* "#>" >
     
-// Your suggested COMMENT pattern - much cleaner!
+|   < SINGLE_LINE_COMMENT: "//" (~["\n", "\r"])* ("\n" | "\r" | "\r\n") >
 |   < COMMENT: "<!--" (~["-"])* ("-" (~["-"])+)* "--" ">" >
     
 |   < DOCTYPE: "<!DOCTYPE" (" ")+ (~[">"])* ">" >

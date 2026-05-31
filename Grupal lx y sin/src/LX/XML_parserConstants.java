@@ -13,25 +13,27 @@ public interface XML_parserConstants {
   /** RegularExpression Id. */
   int XML_DECL = 7;
   /** RegularExpression Id. */
-  int COMMENT = 8;
+  int SINGLE_LINE_COMMENT = 8;
   /** RegularExpression Id. */
-  int DOCTYPE = 9;
+  int COMMENT = 9;
   /** RegularExpression Id. */
-  int CLOSE_START = 10;
+  int DOCTYPE = 10;
   /** RegularExpression Id. */
-  int SELF_CLOSE = 11;
+  int CLOSE_START = 11;
   /** RegularExpression Id. */
-  int OPEN = 12;
+  int SELF_CLOSE = 12;
   /** RegularExpression Id. */
-  int CLOSE = 13;
+  int OPEN = 13;
   /** RegularExpression Id. */
-  int NAME = 14;
+  int CLOSE = 14;
   /** RegularExpression Id. */
-  int EQUALS = 15;
+  int NAME = 15;
   /** RegularExpression Id. */
-  int STRING = 16;
+  int EQUALS = 16;
   /** RegularExpression Id. */
-  int CHARACTER_DATA = 17;
+  int STRING = 17;
+  /** RegularExpression Id. */
+  int CHARACTER_DATA = 18;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -46,6 +48,7 @@ public interface XML_parserConstants {
     "\"\\r\\n\"",
     "\"\\ufeff\"",
     "<XML_DECL>",
+    "<SINGLE_LINE_COMMENT>",
     "<COMMENT>",
     "<DOCTYPE>",
     "\"</\"",

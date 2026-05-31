@@ -161,7 +161,7 @@ if (!openTag.image.equalsIgnoreCase(closeTag.image)) {
 	   jj_la1_init_0();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0x21100,0x21100,0x4000,0x21100,0x21100,0x2800,};
+	   jj_la1_0 = new int[] {0x42200,0x42200,0x8000,0x42200,0x42200,0x5000,};
 	}
 
   {
@@ -312,7 +312,7 @@ if (!openTag.image.equalsIgnoreCase(closeTag.image)) {
   /** Generate ParseException. */
   static public ParseException generateParseException() {
 	 jj_expentries.clear();
-	 boolean[] la1tokens = new boolean[18];
+	 boolean[] la1tokens = new boolean[19];
 	 if (jj_kind >= 0) {
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
@@ -326,7 +326,7 @@ if (!openTag.image.equalsIgnoreCase(closeTag.image)) {
 		 }
 	   }
 	 }
-	 for (int i = 0; i < 18; i++) {
+	 for (int i = 0; i < 19; i++) {
 	   if (la1tokens[i]) {
 		 jj_expentry = new int[1];
 		 jj_expentry[0] = i;
