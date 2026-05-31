@@ -44,14 +44,13 @@ SKIP :
 	| "\r"
 	| "\r\n"
 	| "\ufeff"
-	| <SINGLE_LINE_COMMENT>
+	| < LINE_COMMENT: "//" (~["\n","\r"])* ("\n" | "\r" | "\r\n") >
 }
 
 TOKEN:
 {
 < XML_DECL: "<#xml" ("+")? (~["#",">"])* "#>" >
     
-|   < SINGLE_LINE_COMMENT: "//" (~["\n", "\r"])* ("\n" | "\r" | "\r\n") >
 |   < COMMENT: "<!--" (~["-"])* ("-" (~["-"])+)* "--" ">" >
     
 |   < DOCTYPE: "<!DOCTYPE" (" ")+ (~[">"])* ">" >
@@ -67,7 +66,7 @@ TOKEN:
     
 |   < STRING: "\"" (~["\""])* "\"" | "'" (~["'"])* "'" >
     
-|   < CHARACTER_DATA: (~["<","&",">"])+ >
+|  < CHARACTER_DATA: (~["<","&",">"," ","\t","\n","\r"])+ >
 }
 
 void Input() :

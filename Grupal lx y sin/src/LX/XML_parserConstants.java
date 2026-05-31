@@ -11,9 +11,9 @@ public interface XML_parserConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int XML_DECL = 7;
+  int LINE_COMMENT = 7;
   /** RegularExpression Id. */
-  int SINGLE_LINE_COMMENT = 8;
+  int XML_DECL = 8;
   /** RegularExpression Id. */
   int COMMENT = 9;
   /** RegularExpression Id. */
@@ -47,8 +47,8 @@ public interface XML_parserConstants {
     "\"\\r\"",
     "\"\\r\\n\"",
     "\"\\ufeff\"",
+    "<LINE_COMMENT>",
     "<XML_DECL>",
-    "<SINGLE_LINE_COMMENT>",
     "<COMMENT>",
     "<DOCTYPE>",
     "\"</\"",

@@ -19,7 +19,7 @@ private static final int jjStopStringLiteralDfa_0(int pos, long active0){
    switch (pos)
    {
       case 0:
-         if ((active0 & 0x1007eL) != 0L)
+         if ((active0 & 0x10040L) != 0L)
             return 14;
          if ((active0 & 0x1000L) != 0L)
          {
@@ -47,15 +47,9 @@ static private int jjStopAtPos(int pos, int kind)
 static private int jjMoveStringLiteralDfa0_0(){
    switch(curChar)
    {
-      case 9:
-         return jjStartNfaWithStates_0(0, 2, 14);
-      case 10:
-         return jjStartNfaWithStates_0(0, 3, 14);
       case 13:
          jjmatchedKind = 4;
          return jjMoveStringLiteralDfa1_0(0x20L);
-      case 32:
-         return jjStartNfaWithStates_0(0, 1, 14);
       case 47:
          return jjMoveStringLiteralDfa1_0(0x1000L);
       case 60:
@@ -90,7 +84,7 @@ static private int jjMoveStringLiteralDfa1_0(long active0){
    {
       case 10:
          if ((active0 & 0x20L) != 0L)
-            return jjStartNfaWithStates_0(1, 5, 14);
+            return jjStopAtPos(1, 5);
          break;
       case 47:
          if ((active0 & 0x800L) != 0L)
@@ -144,7 +138,7 @@ static private int jjMoveNfa_0(int startState, int curPos)
             switch(jjstateSet[--i])
             {
                case 5:
-                  if ((0xafffffbfffffffffL & l) != 0L)
+                  if ((0xafffffbeffffd9ffL & l) != 0L)
                   {
                      if (kind > 18)
                         kind = 18;
@@ -174,7 +168,7 @@ static private int jjMoveNfa_0(int startState, int curPos)
                      jjstateSet[jjnewStateCnt++] = 31;
                   break;
                case 0:
-                  if ((0xafffffbfffffffffL & l) != 0L)
+                  if ((0xafffffbeffffd9ffL & l) != 0L)
                   {
                      if (kind > 18)
                         kind = 18;
@@ -188,12 +182,12 @@ static private int jjMoveNfa_0(int startState, int curPos)
                      { jjCheckNAddStates(3, 5); }
                   break;
                case 2:
-                  if ((0x2400L & l) != 0L && kind > 8)
-                     kind = 8;
+                  if ((0x2400L & l) != 0L && kind > 7)
+                     kind = 7;
                   break;
                case 3:
-                  if (curChar == 10 && kind > 8)
-                     kind = 8;
+                  if (curChar == 10 && kind > 7)
+                     kind = 7;
                   break;
                case 4:
                   if (curChar == 13)
@@ -238,7 +232,7 @@ static private int jjMoveNfa_0(int startState, int curPos)
                      kind = 17;
                   break;
                case 14:
-                  if ((0xafffffbfffffffffL & l) == 0L)
+                  if ((0xafffffbeffffd9ffL & l) == 0L)
                      break;
                   if (kind > 18)
                      kind = 18;
@@ -257,8 +251,8 @@ static private int jjMoveNfa_0(int startState, int curPos)
                      { jjCheckNAddTwoStates(18, 20); }
                   break;
                case 19:
-                  if (curChar == 62 && kind > 7)
-                     kind = 7;
+                  if (curChar == 62 && kind > 8)
+                     kind = 8;
                   break;
                case 20:
                   if (curChar == 35)
@@ -566,6 +560,14 @@ public static Token getNextToken()
       return matchedToken;
    }
 
+   try { input_stream.backup(0);
+      while (curChar <= 32 && (0x100000600L & (1L << curChar)) != 0L)
+   {
+      debugStream.println("Skipping character : " + TokenMgrError.addEscapes(String.valueOf(curChar)) + " (" + (int)curChar + ")");
+         curChar = input_stream.BeginToken();
+   }
+   }
+   catch (java.io.IOException e1) { continue EOFLoop; }
    jjmatchedKind = 0x7fffffff;
    jjmatchedPos = 0;
       debugStream.println("Current character : " + TokenMgrError.addEscapes(String.valueOf(curChar)) + " (" + (int)curChar + ") at line " + input_stream.getEndLine() + " column " + input_stream.getEndColumn());
@@ -662,12 +664,12 @@ protected static final int[][][] statesForState = {
 };
 protected static final int[][] kindForState = {
 { 
-  8, 
-  8, 
-  8, 
-  8, 
-  8, 
-  8, 
+  7, 
+  7, 
+  7, 
+  7, 
+  7, 
+  7, 
   15, 
   15, 
   17, 
@@ -677,15 +679,15 @@ protected static final int[][] kindForState = {
   17, 
   17, 
   18, 
-  7, 
-  7, 
-  7, 
-  7, 
-  7, 
-  7, 
-  7, 
-  7, 
-  7, 
+  8, 
+  8, 
+  8, 
+  8, 
+  8, 
+  8, 
+  8, 
+  8, 
+  8, 
   9, 
   9, 
   9, 
@@ -876,10 +878,10 @@ public static final int[] jjnewLexState = {
    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
 };
 static final long[] jjtoToken = {
-   0x7ff81L, 
+   0x7ff01L, 
 };
 static final long[] jjtoSkip = {
-   0x7eL, 
+   0xfeL, 
 };
 static final long[] jjtoSpecial = {
    0x0L, 
