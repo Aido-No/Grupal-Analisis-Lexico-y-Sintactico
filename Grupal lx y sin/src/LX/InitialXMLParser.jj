@@ -43,6 +43,7 @@ SKIP :
 	| "\n"
 	| "\r"
 	| "\r\n"
+	| "\ufeff" 
 }
 
 TOKEN:
@@ -66,17 +67,15 @@ TOKEN:
 |   < STRING: "\"" (~["\""])* "\"" | "'" (~["'"])* "'" >
     
 |   < CHARACTER_DATA: (~["<","&",">"])+ >
-    
-|   < END_OF_FILE: "" >
 }
 
 void Input() :
 {}
 {
-    ( <XML_DECL> )?
-    ( <DOCTYPE> )?
+    <XML_DECL>
+    <DOCTYPE>
     ( Element() | <COMMENT> | <CHARACTER_DATA> )*
-    <END_OF_FILE>
+    <EOF>
 }
 
 void Element() :
